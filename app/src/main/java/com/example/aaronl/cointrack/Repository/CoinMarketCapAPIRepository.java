@@ -14,6 +14,7 @@ import retrofit2.Callback;
 
 public class CoinMarketCapAPIRepository {
     private static CoinMarketCapAPIRepository sharedInstance;
+    private static int PAGE_THRESHOLD = 100;
 
     public static CoinMarketCapAPIRepository getSharedInstance() {
         if (sharedInstance == null) {
@@ -22,8 +23,8 @@ public class CoinMarketCapAPIRepository {
         return sharedInstance;
     }
 
-    public void getCoins(Callback<List<Coin>> cb) {
-        Call<List<Coin>> coinCall = HttpClient.getCoinMarketAPI().getTracker();
+    public void getCoins(Callback<List<Coin>> cb, int page) {
+        Call<List<Coin>> coinCall = HttpClient.getCoinMarketAPI().getTracker(String.valueOf(page*PAGE_THRESHOLD), String.valueOf(PAGE_THRESHOLD));
         coinCall.enqueue(cb);
     }
 

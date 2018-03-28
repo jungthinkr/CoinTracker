@@ -13,22 +13,23 @@ import kotlinx.android.synthetic.main.viewholder_coin.view.*
  * Created by aaronl on 3/23/18.
  */
 
-class CoinListingAdapter(val listener: CoinOnItemClickListener) : RecyclerView.Adapter<CoinListingAdapter.CoinViewHolder>() {
+class CoinListingAdapter(val listener: CoinAdapterController) : RecyclerView.Adapter<CoinListingAdapter.CoinViewHolder>() {
 
-
-    private var coinList: List<Coin>? = null;
+    private var coinList: ArrayList<Coin> = ArrayList();
 
     inner class CoinViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         fun bind(coin: Coin) {
+            itemView.viewholder_coin_ranking.text = coin.rank + "."
             itemView.viewholder_coin_display_name.text = coin.name
             itemView.viewholder_coin_symbol.text = coin.symbol
-            itemView.viewholder_coin_price_usd.text = coin.priceUsd
+            itemView.viewholder_coin_price_usd.text = "$" + coin.priceUsd
             itemView.setOnClickListener({ listener.onCoinClick(coin) })
         }
     }
 
-    interface CoinOnItemClickListener {
+    interface CoinAdapterController {
         fun onCoinClick(coin: Coin)
+        fun didReachBottom()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CoinViewHolder? {
@@ -37,17 +38,26 @@ class CoinListingAdapter(val listener: CoinOnItemClickListener) : RecyclerView.A
     }
 
     override fun onBindViewHolder(holder: CoinViewHolder, position: Int) {
-        coinList?.let {
-            holder.bind(it[position])
+
+        holder.bind(coinList[position])
+        if (position == coinList.lastIndex) {
+            listener.didReachBottom()
         }
+
     }
 
     override fun getItemCount(): Int {
-        return coinList?.size ?: 0
+        return coinList.size
     }
 
     fun injectCoinData(coinData: List<Coin>) {
-        coinList = coinData
+        coinList.addAll(coinData)
         notifyDataSetChanged()
+    }
+
+    fun clear() {
+        val coinListSize = coinList.size
+        coinList.clear()
+        notifyItemRangeChanged(0, coinListSize)
     }
 }

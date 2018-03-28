@@ -16,8 +16,19 @@ import retrofit2.Response
  */
 
 class MainActivityViewModel : ViewModel() {
+    var page = 0
 
-    fun retrieveCoinsFromAPI(): LiveData<List<Coin>>  {
+    fun retrieveInitialCoinList(): LiveData<List<Coin>> {
+        page = 0
+        return retrieveCoinsFromAPI(page)
+    }
+
+    fun retrieveMoreCoinList(): LiveData<List<Coin>> {
+        page++
+        return retrieveCoinsFromAPI(page)
+    }
+
+    private fun retrieveCoinsFromAPI(page: Int): LiveData<List<Coin>>  {
         val mutableCoinLiveData = MutableLiveData<List<Coin>>()
         CoinMarketCapAPIRepository.getSharedInstance().getCoins(object : Callback<List<Coin>> {
             override fun onResponse(call: Call<List<Coin>>, response: Response<List<Coin>>) {
@@ -27,7 +38,7 @@ class MainActivityViewModel : ViewModel() {
             override fun onFailure(call: Call<List<Coin>>, t: Throwable) {
                 mutableCoinLiveData.value = null
             }
-        })
+        }, page)
         return mutableCoinLiveData
     }
 }
