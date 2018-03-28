@@ -28,4 +28,9 @@ public class CoinMarketCapAPIRepository {
         coinCall.enqueue(cb);
     }
 
+    public void getSingleCoin(Callback<Coin> cb, String coinId){
+        Call<Coin> coinCall = HttpClient.getCoinMarketAPI().getCoin(coinId);
+        coinCall.enqueue(cb);
+    }
+
 }

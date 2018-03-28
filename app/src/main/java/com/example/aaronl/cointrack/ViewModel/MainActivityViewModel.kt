@@ -41,4 +41,18 @@ class MainActivityViewModel : ViewModel() {
         }, page)
         return mutableCoinLiveData
     }
+
+    private fun retrieveSingleCoinFromAPI(id: String): LiveData<Coin> {
+        val mutableCoinLiveData = MutableLiveData<Coin>()
+        CoinMarketCapAPIRepository.getSharedInstance().getSingleCoin(object: Callback<Coin> {
+            override fun onResponse(call: Call<Coin>, response: Response<Coin>) {
+                mutableCoinLiveData.value = response.body()
+            }
+
+            override fun onFailure(call: Call<Coin>, t: Throwable) {
+                mutableCoinLiveData.value = null
+            }
+        }, id)
+        return mutableCoinLiveData
+    }
 }
