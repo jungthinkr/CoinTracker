@@ -27,6 +27,7 @@ class CoinDetailsActivity: AppCompatActivity() {
         activity_coin_detail_rank.text = coin.rank
         activity_coin_detail_usd_price.text = coin.priceUsd
 
+        // allen changes
 
 
 //        private var name: String? = null
